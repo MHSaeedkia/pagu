@@ -12,6 +12,7 @@ import (
 	"github.com/pagu-project/pagu/internal/engine/command"
 	"github.com/pagu-project/pagu/internal/entity"
 	"github.com/pagu-project/pagu/pkg/log"
+	"github.com/pagu-project/pagu/pkg/session"
 	"github.com/pagu-project/pagu/pkg/utils"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -25,6 +26,7 @@ type Bot struct {
 	botInstance *tele.Bot
 	cfg         *config.Config
 	target      string
+	session     session.SessionInterface
 }
 
 type BotContext struct {
@@ -51,6 +53,8 @@ func NewTelegramBot(botEngine *engine.BotEngine, token string, cfg *config.Confi
 
 	ctx, cancel := context.WithCancel(context.Background())
 
+	newSession := session.NewSession()
+
 	return &Bot{
 		engine:      botEngine,
 		botInstance: tgb,
@@ -58,6 +62,7 @@ func NewTelegramBot(botEngine *engine.BotEngine, token string, cfg *config.Confi
 		ctx:         ctx,
 		cancel:      cancel,
 		target:      cfg.BotName,
+		session:     newSession,
 	}, nil
 }
 
